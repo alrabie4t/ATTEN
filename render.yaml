@@ -3,7 +3,15 @@ services:
     name: attendance-system-v6
     runtime: python
     plan: free
-    buildCommand: pip install -r requirements.txt
+    buildCommand: |
+      # Force Python 3.11
+      if command -v python3.11 &> /dev/null; then
+        python3.11 -m pip install --upgrade pip
+        python3.11 -m pip install -r requirements.txt
+      else
+        pip install --upgrade pip
+        pip install -r requirements.txt
+      fi
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
